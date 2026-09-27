@@ -1,0 +1,21 @@
+name: Keep Stuff
+
+on:
+  push:
+  create:
+  delete:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keep:
+    if: github.ref != 'refs/heads/keep-stuff-state'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: treatwashere/keep-stuff@main
