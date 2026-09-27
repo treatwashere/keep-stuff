@@ -1,0 +1,15 @@
+name: Keep Stuff CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check action metadata
+        run: ruby -e "require 'yaml'; YAML.load_file('action.yml')"
+      - name: Check shell syntax
+        run: bash -n scripts/keep-stuff.sh
