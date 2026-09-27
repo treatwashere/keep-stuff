@@ -22,7 +22,7 @@ runs:
     - name: Run Keep Stuff
       shell: bash
       env:
-        INPUT_DRY_RUN: ${{{ inputs.dry-run }}
-        INPUT_STATE_BRANCH: ${{{ inputs.state-branch }}
-        INPUT_COMMIT_MESSAGE: ${{{ inputs.commit-message }}
-      run: bash "${{{ github.action_path }}/scripts/keep-stuff.sh"
+        INPUT_DRY_RUN: ${{ inputs.dry-run }}
+        INPUT_STATE_BRANCH: ${{ inputs.state-branch }}
+        INPUT_COMMIT_MESSAGE: ${{ inputs.commit-message }}
+      run: bash "${{ github.action_path }}/scripts/keep-stuff.sh"
