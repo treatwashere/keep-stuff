@@ -61,10 +61,10 @@ KEEP_ALL=false
 [ -f ".keep repo" ] && KEEP_REPO=true
 [ -f ".keep all stuff" ] && KEEP_ALL=true
 
-mapfile -t FILE_MARKERS < <(find . -type f -name '.keep file' -print | sort)
-mapfile -t FOLDER_MARKERS < <(find . -type f -name '.keep folder' -print | sort)
-mapfile -t TREE_MARKERS < <(find . -type f -name '.keep tree' -print | sort)
-mapfile -t BRANCH_MARKERS < <(find . -type f -name '.keep branch' -print | sort)
+mapfile -t FILE_MARKERS < <(find . -type f -name '.keepfile' -print | sort)
+mapfile -t FOLDER_MARKERS < <(find . -type f -name '.keepfolder' -print | sort)
+mapfile -t TREE_MARKERS < <(find . -type f -name '.keeptree' -print | sort)
+mapfile -t BRANCH_MARKERS < <(find . -type f -name '.keepbranch' -print | sort)
 
 KEEP_FILES=()
 KEEP_DIRS=()
@@ -306,7 +306,7 @@ show_summary() {
 
   log "Mode: $mode"
   log "File markers: ${#FILE_MARKERS[@]}"
-  log "Folder/tree markers: $(( ${#FOLDER_MARKERS[@] + ${#TREE_MARKERS[@] ))"
+  log "Folder/tree markers: $(( ${#FOLDER_MARKERS[@]} + ${#TREE_MARKERS[@]} ))"
   log "Branch markers: ${#BRANCH_MARKERS[@]}"
   [ "$DRY_RUN" = "true" ] && log "Dry-run mode is enabled; no repository changes will be made."
 }
