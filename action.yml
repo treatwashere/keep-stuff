@@ -1,0 +1,28 @@
+name: Keep Stuff
+description: Protect files, folders, trees, branches, or an entire repository and restore protected content when it is deleted.
+author: treatwashere
+
+inputs:
+  dry-run:
+    description: Show what Keep Stuff would restore without making changes.
+    required: false
+    default: "false"
+  state-branch:
+    description: Branch used to remember protected branch tip commits.
+    required: false
+    default: "keep-stuff-state"
+  commit-message:
+    description: Commit message used when protected files are restored.
+    required: false
+    default: "chore: restore kept files"
+
+runs:
+  using: composite
+  steps:
+    - name: Run Keep Stuff
+      shell: bash
+      env:
+        INPUT_DRY_RUN: ${{{ inputs.dry-run }}
+        INPUT_STATE_BRANCH: ${{{ inputs.state-branch }}
+        INPUT_COMMIT_MESSAGE: ${{{ inputs.commit-message }}
+      run: bash "${{{ github.action_path }}/scripts/keep-stuff.sh"
