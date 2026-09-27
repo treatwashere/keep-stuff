@@ -61,22 +61,23 @@ KEEP_ALL=false
 [ -f ".keeprepo" ] && KEEP_REPO=true
 [ -f ".keepallstuff" ] && KEEP_ALL=true
 
-mapfile -t FILE_MARKERS < <(find . -type f -name '.keepfile' -print | sort)
+ADDKEEP_IMPORT=""
+if [ -f ".addkeep" ]; then
+  ADDKEEP_IMPORT="$(sed -nE 's/^[[:space:]]*import[[:space:]]+([^[:space:]]+)[[:space:]]*$/\1/p' ".addkeep" | head -n 1)"
+  if [ -z "$ADDKEEP_IMPORT" ]; then
+    warn ".addkeep exists but does not contain a valid import line. Expected: import treatwashere/keep-stuff@main"
+  else
+    log "Loaded .addkeep import: $ADDKEEP_IMPORT"
+  fi
+fi
+
 mapfile -t FOLDER_MARKERS < <(find . -type f -name '.keepfolder' -print | sort)
-mapfile -t TREE_MARKERS < <(find . -type f -name '.keeptree' -print | sort)
 mapfile -t BRANCH_MARKERS < <(find . -type f -name '.keepbranch' -print | sort)
 
-KEEP_FILES=()
 KEEP_DIRS=()
 KEEP_BRANCHES=()
 
-for marker in "${FILE_MARKERS[@]}"; do
-  while IFS= read -r item; do
-    [ -n "$item" ] && KEEP_FILES+=("$item")
-  done < <(read_marker_lines "$marker")
-done
-
-for marker in "${FOLDER_MARKERS[@]}" "${TREE_MARKERS[@]}"; do
+for marker in "${FOLDER_MARKERS[@]}"; do
   [ -n "$marker" ] || continue
   while IFS= read -r item; do
     [ -n "$item" ] && KEEP_DIRS+=("$item")
@@ -305,9 +306,9 @@ show_summary() {
   [ "$KEEP_REPO" = true ] && [ "$KEEP_ALL" = false ] && mode="repo"
 
   log "Mode: $mode"
-  log "File markers: ${#FILE_MARKERS[@]}"
-  log "Folder/tree markers: $(( ${#FOLDER_MARKERS[@]} + ${#TREE_MARKERS[@]} ))"
+  log "Folder markers: ${#FOLDER_MARKERS[@]}"
   log "Branch markers: ${#BRANCH_MARKERS[@]}"
+  [ -n "$ADDKEEP_IMPORT" ] && log "Import: $ADDKEEP_IMPORT"
   [ "$DRY_RUN" = "true" ] && log "Dry-run mode is enabled; no repository changes will be made."
   return 0
 }
