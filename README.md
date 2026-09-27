@@ -6,6 +6,10 @@ Keep Stuff is a GitHub Action for protecting repository content from deletion.
 
 The easiest setup is designed around a single `.addkeep` file.
 
+**[![Add Keep Stuff to GitHub](https://img.shields.io/badge/Add%20Keep%20Stuff%20to%20GitHub-Install%20App-2ea44f?logo=github)](https://github.com/apps/keep-stuff/installations/new)**
+
+Click the button above to install the **Keep Stuff GitHub App** on a repository.
+
 1. Install the **Keep Stuff GitHub App** on the repository.
 2. Create a file named `.addkeep` in the repository root.
 3. Put this exact line inside it:
@@ -18,7 +22,7 @@ import treatwashere/keep-stuff@main
 
 The Keep Stuff App watches repository push events, detects the `.addkeep` import, and can add the required GitHub Actions workflow automatically.
 
-> **App status:** The App implementation is being prepared. Until the App is registered and installed, use the standard workflow setup below.
+> **App status:** The Keep Stuff GitHub App implementation is ready in `app/`. The App still needs to be registered with GitHub and deployed to a public HTTPS endpoint before the install button can be used by others.
 
 ## Supported protection markers
 
@@ -31,7 +35,7 @@ The old `.keepfile` and `.keeptree` markers are no longer supported.
 
 ## Standard GitHub Actions setup
 
-Until the Keep Stuff App is installed, the action can be used directly from a workflow:
+Until the Keep Stuff App is registered and installed, the action can be used directly from a workflow:
 
 ```yaml
 name: Keep Stuff
