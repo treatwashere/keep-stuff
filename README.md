@@ -1,134 +1,36 @@
 # Keep Stuff
 
-Keep Stuff is a GitHub Action for declaring repository content that should be kept. It can restore protected files after a deletion and recreate protected branches from their last remembered commit.
+Keep Stuff is a GitHub Action for protecting repository content from deletion.
 
-## Markers
+## The `.addkeep` file
 
-| Marker | What it keeps |
-| --- | --- |
-| `.keepfile` | Specific files listed inside the marker |
-| `.keepfolder` | Everything under the listed folder paths |
-| `.keeptree` | Everything under the listed Git tree paths |
-| `.keepbranch` | Specific branch names listed inside the marker |
-| `.keeprepo` | All tracked files in the repository |
-| `.keepallstuff` | All tracked files plus branches remembered by Keep Stuff |
-
-The marker files themselves are also protected.
-
-## One-time workflow setup
-
-A marker file by itself cannot start GitHub Actions. GitHub only runs workflow files from `.github/workflows/`, so the repository needs this one-time workflow:
-
-```yaml
-name: Keep Stuff
-
-on:
-  push:
-  create:
-  delete:
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  keep:
-    if: github.ref != 'refs/heads/keep-stuff-state'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: treatwashere/keep-stuff@main
-```
-
-After that, the `.keep*` markers control what gets protected.
-
-## Examples
-
-### Keep selected files
-
-Create a file named `.keepfile`:
+Users can declare the Keep Stuff action in one file:
 
 ```text
-README.md
-src/config.json
-public/index.html
+import treatwashere/keep-stuff@main
 ```
 
-Paths are relative to the folder containing the marker.
+Keep Stuff reads that import and uses the supported protection markers in the same repository.
 
-### Keep a folder
+**GitHub limitation:** a plain `.addkeep` file cannot start a GitHub Action by itself. GitHub only executes workflow files from `.github/workflows/`. The `.addkeep` format is supported by the action, but invoking the action still requires a GitHub Actions workflow or another installer mechanism.
 
-Create `.keepfolder` and list directories:
+## Supported protection markers
 
-```text
-assets
-src/components
-```
+- `.keepfolder` — protects folders listed inside the marker.
+- `.keepbranch` — protects branches listed inside the marker.
+- `.keeprepo` — protects all tracked repository files.
+- `.keepallstuff` — protects all tracked files and remembered branches.
 
-Folder protection is recursive.
+The old `.keepfile` and `.keeptree` markers are no longer supported.
 
-### Keep a Git tree
-
-Create `.keeptree` and list tree paths:
-
-```text
-packages
-docs
-```
-
-Tree protection is recursive.
-
-### Keep branches
-
-Create `.keepbranch`:
-
-```text
-main
-production
-release
-```
-
-Keep Stuff stores the latest known commit for protected branches in a dedicated `keep-stuff-state` branch. If a protected branch is deleted, the action recreates it from that saved commit.
-
-### Keep the entire repository
-
-Create an empty file named:
-
-```text
-.keeprepo
-```
-
-This protects tracked files.
-
-### Keep absolutely everything
-
-Create an empty file named:
-
-```text
-.keepallstuff
-```
-
-This enables repository-wide file protection and remembers branches so deleted branches can be recreated.
-
-## Behavior
-
-Keep Stuff restores deletions; it does not overwrite a protected file merely because its contents were edited. A newly created protected file becomes protectable after it exists in a push, so a later deletion can be restored from the previous commit.
-
-Use `dry-run: "true"` to preview actions:
+## Standard GitHub Actions reference
 
 ```yaml
 - uses: treatwashere/keep-stuff@main
-  with:
-    dry-run: "true"
 ```
+
+Keep Stuff restores protected files after deletion and can recreate protected branches from their remembered commit.
 
 ## Empty folders
 
-Git does not track empty directories by themselves. To keep an empty folder present, the folder still needs a tracked marker file such as `.keepfolder`.
-
-## License
-
-MIT
+Git does not track empty directories by themselves, so a tracked file is still required for an empty folder to exist in Git.
