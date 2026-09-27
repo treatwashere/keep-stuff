@@ -58,8 +58,8 @@ read_marker_lines() {
 KEEP_REPO=false
 KEEP_ALL=false
 
-[ -f ".keep repo" ] && KEEP_REPO=true
-[ -f ".keep all stuff" ] && KEEP_ALL=true
+[ -f ".keeprepo" ] && KEEP_REPO=true
+[ -f ".keepallstuff" ] && KEEP_ALL=true
 
 mapfile -t FILE_MARKERS < <(find . -type f -name '.keepfile' -print | sort)
 mapfile -t FOLDER_MARKERS < <(find . -type f -name '.keepfolder' -print | sort)
@@ -309,6 +309,7 @@ show_summary() {
   log "Folder/tree markers: $(( ${#FOLDER_MARKERS[@]} + ${#TREE_MARKERS[@]} ))"
   log "Branch markers: ${#BRANCH_MARKERS[@]}"
   [ "$DRY_RUN" = "true" ] && log "Dry-run mode is enabled; no repository changes will be made."
+  return 0
 }
 
 if [ ! -d .git ]; then
