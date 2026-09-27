@@ -2,17 +2,23 @@
 
 Keep Stuff is a GitHub Action for protecting repository content from deletion.
 
-## The `.addkeep` file
+## One-file setup with the Keep Stuff GitHub App
 
-Users can declare the Keep Stuff action in one file:
+The easiest setup is designed around a single `.addkeep` file.
+
+1. Install the **Keep Stuff GitHub App** on the repository.
+2. Create a file named `.addkeep` in the repository root.
+3. Put this exact line inside it:
 
 ```text
 import treatwashere/keep-stuff@main
 ```
 
-Keep Stuff reads that import and uses the supported protection markers in the same repository.
+4. Push the file.
 
-**GitHub limitation:** a plain `.addkeep` file cannot start a GitHub Action by itself. GitHub only executes workflow files from `.github/workflows/`. The `.addkeep` format is supported by the action, but invoking the action still requires a GitHub Actions workflow or another installer mechanism.
+The Keep Stuff App watches repository push events, detects the `.addkeep` import, and can add the required GitHub Actions workflow automatically.
+
+> **App status:** The App implementation is being prepared. Until the App is registered and installed, use the standard workflow setup below.
 
 ## Supported protection markers
 
@@ -23,10 +29,32 @@ Keep Stuff reads that import and uses the supported protection markers in the sa
 
 The old `.keepfile` and `.keeptree` markers are no longer supported.
 
-## Standard GitHub Actions reference
+## Standard GitHub Actions setup
+
+Until the Keep Stuff App is installed, the action can be used directly from a workflow:
 
 ```yaml
-- uses: treatwashere/keep-stuff@main
+name: Keep Stuff
+
+on:
+  push:
+  create:
+  delete:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keep:
+    if: github.ref != 'refs/heads/keep-stuff-state'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: treatwashere/keep-stuff@main
 ```
 
 Keep Stuff restores protected files after deletion and can recreate protected branches from their remembered commit.
