@@ -6,12 +6,12 @@ Keep Stuff is a GitHub Action for declaring repository content that should be ke
 
 | Marker | What it keeps |
 | --- | --- |
-| `.keep file` | Specific files listed inside the marker |
-| `.keep folder` | Everything under the listed folder paths |
-| `.keep tree` | Everything under the listed Git tree paths |
-| `.keep branch` | Specific branch names listed inside the marker |
-| `.keep repo` | All tracked files in the repository |
-| `.keep all stuff` | All tracked files plus branches remembered by Keep Stuff |
+| `.keepfile` | Specific files listed inside the marker |
+| `.keepfolder` | Everything under the listed folder paths |
+| `.keeptree` | Everything under the listed Git tree paths |
+| `.keepbranch` | Specific branch names listed inside the marker |
+| `.keeprepo` | All tracked files in the repository |
+| `.keepallstuff` | All tracked files plus branches remembered by Keep Stuff |
 
 The marker files themselves are also protected.
 
@@ -43,13 +43,13 @@ jobs:
       - uses: treatwashere/keep-stuff@main
 ```
 
-After that, the `.keep ...` markers control what gets protected.
+After that, the `.keep*` markers control what gets protected.
 
 ## Examples
 
 ### Keep selected files
 
-Create a file named `.keep file`:
+Create a file named `.keepfile`:
 
 ```text
 README.md
@@ -61,7 +61,7 @@ Paths are relative to the folder containing the marker.
 
 ### Keep a folder
 
-Create `.keep folder` and list directories:
+Create `.keepfolder` and list directories:
 
 ```text
 assets
@@ -72,7 +72,7 @@ Folder protection is recursive.
 
 ### Keep a Git tree
 
-Create `.keep tree` and list tree paths:
+Create `.keeptree` and list tree paths:
 
 ```text
 packages
@@ -83,7 +83,7 @@ Tree protection is recursive.
 
 ### Keep branches
 
-Create `.keep branch`:
+Create `.keepbranch`:
 
 ```text
 main
@@ -98,7 +98,7 @@ Keep Stuff stores the latest known commit for protected branches in a dedicated 
 Create an empty file named:
 
 ```text
-.keep repo
+.keeprepo
 ```
 
 This protects tracked files.
@@ -108,7 +108,7 @@ This protects tracked files.
 Create an empty file named:
 
 ```text
-.keep all stuff
+.keepallstuff
 ```
 
 This enables repository-wide file protection and remembers branches so deleted branches can be recreated.
@@ -127,7 +127,7 @@ Use `dry-run: "true"` to preview actions:
 
 ## Empty folders
 
-Git does not track empty directories by themselves. To keep an empty folder present, the folder still needs a tracked marker file such as `.keep folder`.
+Git does not track empty directories by themselves. To keep an empty folder present, the folder still needs a tracked marker file such as `.keepfolder`.
 
 ## License
 
